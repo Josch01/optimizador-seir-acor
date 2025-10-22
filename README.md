@@ -13,14 +13,6 @@ Este proyecto fue desarrollado como una herramienta de investigación para encon
 * **Análisis y Visualización:** Incluye un dashboard con gráficas (usando `pyqtgraph`) para analizar la convergencia del costo, la evolución de los parámetros y la distribución de las soluciones en las colonias.
 * **Reportes en PDF:** Genera un reporte final en PDF con los resultados de la optimización, incluyendo gráficas y los parámetros finales.
 
-## Capturas de Pantalla
-
-*(¡MUY IMPORTANTE! Añade aquí 2 o 3 capturas de pantalla de tu GUI. Sube las imágenes al repositorio y enlaza aquí)*
-
-| Vista Principal (Modelo vs. Datos) | Dashboard de Análisis |
-| :---: | :---: |
-| *(Tu captura de pantalla aquí)* | *(Tu captura de pantalla aquí)* |
-| `![Vista Principal](ruta/a/tu/imagen1.png)` | `![Dashboard](ruta/a/tu/imagen2.png)` |
 
 ## Tecnologías Utilizadas
 
