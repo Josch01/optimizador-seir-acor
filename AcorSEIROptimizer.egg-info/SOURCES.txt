@@ -1,0 +1,16 @@
+pyproject.toml
+AcorSEIROptimizer.egg-info/PKG-INFO
+AcorSEIROptimizer.egg-info/SOURCES.txt
+AcorSEIROptimizer.egg-info/dependency_links.txt
+AcorSEIROptimizer.egg-info/top_level.txt
+clases/__init__.py
+clases/acor_optimizer.py
+clases/dialogs.py
+clases/helpers.py
+clases/mcmc_dialog.py
+clases/model_config_dialog.py
+clases/report_generator.py
+clases/seir_model.py
+clases/themes.py
+tests/test_helpers.py
+tests/test_seir_model.py

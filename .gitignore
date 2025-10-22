@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Entorno virtual
+venv/
+env/
+.venv/
+
+# Archivos de IDE/Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Archivos temporales (como las imágenes de ejemplo que me mandaste)
+# Si esas imágenes NO son parte del proyecto, ignóralas
+*.png
+*.jpg

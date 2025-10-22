@@ -1,0 +1,90 @@
+
+# ==================================================
+# ESQUEMA GENERAL DEL PROGRAMA ACOR-SEIR
+# ==================================================
+
+Este archivo describe la estructura principal del proyecto, detallando los archivos, clases y métodos más importantes.
+
+-------------------------------------
+## 1. Archivo Principal: main.py
+-------------------------------------
+Contiene la clase principal de la aplicación (`MainWindow`) que construye y controla toda la interfaz gráfica y el flujo de trabajo.
+
+- **@dataclass RunResult**:
+  Una clase de datos simple para almacenar los resultados de una única ejecución de optimización.
+  - `run_id: int`
+  - `best_cost: float`
+  - `best_params: np.ndarray`
+  - `cost_history: list`
+  - `duration: float`
+
+- **class MainWindow(QMainWindow)**:
+  La ventana principal de la aplicación.
+  - `def __init__(self)`: Inicializa la ventana, el modelo, el optimizador y las variables de estado.
+  - `def init_ui(self)`: Construye todos los componentes de la interfaz (paneles, gráficos, pestañas, botones).
+  - `def _setup_config_tab(self, tab)`: Crea los widgets para la pestaña de "Configuración".
+  - `def _setup_dashboard_tab(self, tab)`: Crea los widgets para la pestaña de "Dashboard".
+  - `def _create_menu_bar(self)`: Crea la barra de menú superior (Archivo, Ver, Ayuda).
+  - `def _load_settings(self)` / `_save_settings(self)`: Guardan y cargan la configuración de la app (tamaño de ventana, tema).
+  - `def log(self, ...)`: Escribe un mensaje en el panel de Log.
+  - `def update_plot(self, ...)`: Actualiza el gráfico principal con los datos y las curvas de ajuste.
+  - `def run_optimization(self)`: Inicia el proceso de optimización en un hilo secundario.
+  - `def stop_optimization(self)`: Detiene la optimización en curso.
+  - `def optimization_finished(self, ...)`: Se ejecuta cuando la optimización termina, actualiza los resultados y el historial.
+  - `def import_xlsx(self, ...)` / `def import_json(self, ...)`: Manejan la importación de datos.
+  - `def _reset_session_state(self)`: **(Nuevo)** Limpia el estado de la app (historial, gráficos) al cargar nuevos datos.
+  - `def _add_dashboard_plot(self, ...)`: **(Nuevo)** Añade un gráfico de análisis al panel izquierdo.
+  - `def _clear_dashboard_plots(self)`: **(Nuevo)** Limpia todos los gráficos de análisis.
+  - `def show_rt_plot(self)`: Muestra el gráfico de Rt.
+  - `def show_residuals_plot(self)`: Muestra el gráfico de residuos.
+  - `def show_convergence_plot(self)`: Muestra la curva de convergencia de costo.
+  - `def show_distribution_plot(self)`: Muestra la distribución de parámetros en el archivo.
+  - `def show_parallel_plot(self)`: **(Nuevo)** Muestra el gráfico de coordenadas paralelas.
+  - `def show_bounds_analysis_plot(self)`: **(Nuevo)** Muestra el análisis de proximidad a los límites.
+
+-------------------------------------
+## 2. Carpeta de Clases: /clases
+-------------------------------------
+
+### clases/seir_model.py
+Define el modelo matemático que se va a optimizar.
+
+- **class SEIRModel**:
+  - `def __init__(self)`: Define los parámetros, sus nombres (`labels`) y sus límites (`bounds`).
+  - `def seir_harmonic(self, ...)`: Contiene el sistema de ecuaciones diferenciales del modelo SEIR con parámetros armónicos.
+  - `def fitness(self, params)`: La función de coste (o aptitud). Calcula el error entre los datos y la predicción del modelo para un conjunto de parámetros. **El objetivo del optimizador es minimizar el valor de esta función.**
+
+### clases/acor_optimizer.py
+Implementa el algoritmo de optimización y el worker que lo ejecuta.
+
+- **class ACOROptimizer**:
+  - `def __init__(self, ...)`: Inicializa el optimizador con la función de fitness, los límites y la configuración.
+  - `def optimize(self, ...)`: El bucle principal del algoritmo ACOR. Itera, genera soluciones y las evalúa.
+  - `def _initialize_colonies(self, ...)`: Crea las poblaciones iniciales (colonias).
+  - `def _generate_solutions(self, ...)`: Genera nuevas soluciones (hormigas) en cada iteración.
+  - `def _apply_migration(self)`: Intercambia las mejores soluciones entre colonias.
+
+- **class ACORWorker(QThread)**:
+  - `def run(self)`: Ejecuta `ACOROptimizer.optimize()` en un hilo separado para no congelar la interfaz gráfica.
+
+### clases/helpers.py
+Clases de datos y funciones de utilidad.
+
+- **@dataclass ACORConfig**: Almacena todos los hiperparámetros del algoritmo ACOR (n_ants, max_iter, etc.).
+- `def parse_numeric(expr)`: Convierte una cadena de texto (ej. "2*pi") a un valor numérico.
+
+### clases/dialogs.py
+Define las ventanas de diálogo emergentes para configuraciones avanzadas.
+
+- **class AdvancedACORConfigDialog(QDialog)**: Permite ajustar parámetros avanzados de ACOR (multi-colonia, etc.).
+- **class ParametersDialog(QDialog)**: Permite al usuario editar los límites de cada parámetro del modelo.
+- ...(otras clases de diálogo que existían antes de las modificaciones, como `ResidualsDialog`, `ConvergenceDialog`, etc., cuya funcionalidad ahora está integrada en el panel principal).
+
+### clases/report_generator.py
+Lógica para crear el informe en PDF.
+
+- **class ReportGenerator**:
+  - `def generate_pdf(self)`: Crea un archivo PDF con un resumen de la ejecución, gráficos y parámetros finales.
+
+### clases/themes.py
+Contiene las hojas de estilo (QSS) para los temas claro y oscuro.
